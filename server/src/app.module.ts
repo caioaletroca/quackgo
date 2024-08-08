@@ -7,8 +7,8 @@ import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [http]
-    })
+      load: [http],
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
