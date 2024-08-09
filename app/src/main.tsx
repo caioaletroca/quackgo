@@ -2,8 +2,10 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import RootLayout from './pages/root.tsx'
-import './index.css'
 import HomePage from './pages/HomePage/index.tsx'
+import SearchPage from './pages/SearchPage/index.tsx'
+import './index.css'
+import { ThemeProvider } from './components/Theme';
 
 const router = createBrowserRouter([
   {
@@ -13,6 +15,10 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <HomePage />
+      },
+      {
+        path: '/search',
+        element: <SearchPage />
       }
     ]
   }
@@ -20,6 +26,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <ThemeProvider>
+      <RouterProvider router={router} />
+    </ThemeProvider>
   </StrictMode>,
 )
