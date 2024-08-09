@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { RelatedTopic, SubRelatedTopic, SearchResults } from "../types";
+import { RelatedTopic, SubRelatedTopic, SearchResult } from "../types";
 import { ConfigService } from "@nestjs/config";
 import { HttpService } from "@nestjs/axios";
 import { firstValueFrom } from "rxjs";
@@ -13,7 +13,7 @@ type SearchResponse = {
 export class SearchService {
     constructor(private configService: ConfigService, private readonly httpService: HttpService) {}
     
-    async search(query: string): Promise<SearchResults[]> {
+    async search(query: string): Promise<SearchResult[]> {
         const url = this.configService.get<string>("searchApi");
 
         try {
@@ -36,6 +36,16 @@ export class SearchService {
 
             throw error;
         }
+    }
+
+    paginate(results: SearchResult[], page: number, limit: number) {
+        const total = results.length;
+
+        if(page * limit > total) {
+            return [];
+        }
+
+        return results.slice(page * limit, (page * limit) + limit);
     }
 
     /**

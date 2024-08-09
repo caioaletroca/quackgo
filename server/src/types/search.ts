@@ -1,4 +1,4 @@
-export type SearchResults = {
+export type SearchResult = {
     FirstURL: string;
     Result: string;
     Text: string;
@@ -6,7 +6,7 @@ export type SearchResults = {
 
 export type SubRelatedTopic = {
     Name: string;
-    Topics: SearchResults[]
+    Topics: SearchResult[]
 };
 
-export type RelatedTopic = SearchResults | SubRelatedTopic;
+export type RelatedTopic = SearchResult | SubRelatedTopic;

@@ -1,2 +1,2 @@
 export * from './response';
-export * from './searchResults';
+export * from './search';
