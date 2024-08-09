@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage/index.tsx'
 import SearchPage from './pages/SearchPage/index.tsx'
 import './index.css'
 import { ThemeProvider } from './components/Theme';
+import { HistoryProvider } from './components/History'
 
 const router = createBrowserRouter([
   {
@@ -27,7 +28,9 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider>
-      <RouterProvider router={router} />
+      <HistoryProvider>
+        <RouterProvider router={router} />
+      </HistoryProvider>
     </ThemeProvider>
   </StrictMode>,
 )

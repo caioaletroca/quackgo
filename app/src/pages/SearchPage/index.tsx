@@ -12,6 +12,8 @@ import omitBy from 'lodash.omitby';
 import isNil from 'lodash.isnil';
 import pick from 'lodash.pick';
 import { useFormik } from "formik";
+import { useHistory } from "@/components/History";
+import { HistoryDrawer } from "@/components/History/HistoryDrawer";
 
 function SearchResult({ FirstURL, Text }: SearchResult) {
     const navigate = useNavigate();
@@ -62,6 +64,7 @@ const initialValues = {
 
 export default function SearchPage() {
     const [searchParams, setSearchParams] = useSearchParams();
+    const { add } = useHistory();
 
     const { trigger , data: searchResults, isMutating } = useSearch();
 
@@ -89,6 +92,7 @@ export default function SearchPage() {
     const handleSubmit = (values: SearchParams) => {
         setSearchParams(values);
         trigger(values)
+        add(values.q);
     }
 
     const formik = useFormik({
@@ -118,6 +122,8 @@ export default function SearchPage() {
                 onSearch={formik.handleSubmit}
                 onClear={() => formik.setFieldValue('q', '')}
             />
+
+            <HistoryDrawer open />
 
             {isMutating && <SearchPageLoading />}
 
