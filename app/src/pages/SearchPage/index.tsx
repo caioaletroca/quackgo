@@ -1,13 +1,17 @@
-import { useSearch } from "@/api/search";
+import { SearchParams, useSearch } from "@/api/search";
 import Header from "@/components/Header";
 import Page from "@/components/Page";
 import Content from "@/components/Page/Content";
 import { SearchResult } from "@/types";
-import { Link, Skeleton, Typography } from "@mui/material";
+import { Link, Pagination, Skeleton, Typography } from "@mui/material";
 import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import "./index.css";
 import Icon from "@/components/Icon";
+import omitBy from 'lodash.omitby';
+import isNil from 'lodash.isnil';
+import pick from 'lodash.pick';
+import { useFormik } from "formik";
 
 function SearchResult({ FirstURL, Text }: SearchResult) {
     const navigate = useNavigate();
@@ -50,35 +54,69 @@ function SearchPageEmpty() {
     );
 }
 
+const initialValues = {
+    q: '',
+    page: 0,
+    limit: 10
+}
+
 export default function SearchPage() {
-    const [search, setSearch] = React.useState('');
     const [searchParams, setSearchParams] = useSearchParams();
 
     const { trigger , data: searchResults, isMutating } = useSearch();
 
-    React.useEffect(() => {
-        const current = searchParams.get('q') as string;
+    const formikValues = React.useMemo(() => {
+        // Collect URL params entries and clean up any null ones
+        // Also, clean up any invalid not expected entries
+        const params = pick(
+            omitBy(
+                Object.fromEntries(searchParams.entries()),
+                isNil
+            ),
+            Object.keys(initialValues)
+        );
 
-        if(current != '') {
-            setSearch(searchParams.get('q') as string);
-            trigger({ query: current });
+        // If there's some query
+        if(params.q !== '') {
+            trigger(params);
+            return Object.assign({}, initialValues, params);
         }
+
+        return initialValues;
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleSubmit = () => {
-        setSearchParams({ q: search });
-        trigger({ query: search })
+    const handleSubmit = (values: SearchParams) => {
+        setSearchParams(values);
+        trigger(values)
     }
 
+    const formik = useFormik({
+        initialValues: formikValues,
+        onSubmit: handleSubmit,
+        enableReinitialize: true
+    });
+
+    const handlePagination = (_event: React.ChangeEvent<unknown>, value: number) => {
+        const params = {
+            ...formik.values,
+            page: value - 1
+        }
+
+        formik.setFieldValue('page', value - 1);
+
+        handleSubmit(params)
+    }
+    
     return (
         <Page>
             <Header
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                onBlur={(e) => setSearch(e.target.value)}
-                onSearch={handleSubmit}
-                onClear={() => setSearch('')}
+                name='q'
+                value={formik.values.q}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                onSearch={formik.handleSubmit}
+                onClear={() => formik.setFieldValue('q', '')}
             />
 
             {isMutating && <SearchPageLoading />}
@@ -87,9 +125,10 @@ export default function SearchPage() {
 
             {!isMutating && searchResults?.data && searchResults?.data.length > 0 &&
                 <Content className="pr-10">
-                    {searchResults?.data?.map(result => (
-                        <SearchResult {...result} />
+                    {searchResults?.data?.map((result, index) => (
+                        <SearchResult key={index} {...result} />
                     ))}
+                    <Pagination page={formik.values.page + 1} count={Math.ceil(searchResults.meta.total / searchResults.meta.limit)} onChange={handlePagination} />
                 </Content>
             }
         </Page>

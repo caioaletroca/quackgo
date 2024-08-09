@@ -2,14 +2,14 @@ import { IconButton, InputAdornment, TextField, TextFieldProps } from "@mui/mate
 import Icon from "./Icon";
 
 export type SearchTextFieldProps = TextFieldProps & {
-    onSearch?: (value: string) => void;
+    onSearch?: () => void;
 	onClear?: () => void;
 };
 
 export default function SearchTextField({ value, onSearch, onClear, ...others }: SearchTextFieldProps) {
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
         if(e.key == 'Enter') {
-            onSearch?.(value as string);
+            onSearch?.();
             e.preventDefault();
         }
     }
@@ -20,7 +20,7 @@ export default function SearchTextField({ value, onSearch, onClear, ...others }:
             InputProps={{
                 startAdornment: (
 					<InputAdornment position="start">
-						<IconButton onClick={() => onSearch?.(value as string)}>
+						<IconButton onClick={() => onSearch?.()}>
                             <Icon>search</Icon>
                         </IconButton>
 					</InputAdornment>
