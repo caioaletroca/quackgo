@@ -18,13 +18,6 @@ export default function SearchTextField({ value, onSearch, onClear, ...others }:
         <TextField
             value={value}
             InputProps={{
-                startAdornment: (
-					<InputAdornment position="start">
-						<IconButton onClick={() => onSearch?.()}>
-                            <Icon>search</Icon>
-                        </IconButton>
-					</InputAdornment>
-				),
                 endAdornment: value !== '' && (
 					<InputAdornment position="end">
 						<IconButton onClick={onClear}>
