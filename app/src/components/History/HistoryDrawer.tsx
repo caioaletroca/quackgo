@@ -1,31 +1,115 @@
-import { Drawer, DrawerProps, List, ListItem, ListItemButton, ListItemText } from "@mui/material";
+import { Drawer, DrawerProps, IconButton, List, ListItem, ListItemButton, ListItemText, Tooltip, Typography } from "@mui/material";
 import { useHistory } from "./useHistory";
+import Icon from "../Icon";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import "./HistoryDrawer.css";
+import React from "react";
+import ConfirmationDialog from "../ConfirmationDialog";
 
-export type HistoryDrawerProps = DrawerProps
+export type HistoryItemProps = {
+    query: string;
+    onClick?: React.MouseEventHandler;
+    onClose?: React.MouseEventHandler
+}
 
-function HistoryItem({ query }: { query: string }) {
+function HistoryItem({ query, onClick, onClose }: HistoryItemProps) {
     return (
-        <ListItem disablePadding>
+        <ListItem
+            className="history-item"
+            disablePadding
+            onClick={onClick}
+            secondaryAction={(
+                <IconButton className="history-item-action" edge='end' onClick={onClose}>
+                    <Icon color='grey'>close</Icon>
+                </IconButton>
+            )}>
             <ListItemButton>
-                <ListItemText primary={query} />
+                <Tooltip
+                    title={query}
+                    className="overflow-x-clip"
+                    disableHoverListener={query.length < 32}>
+                    <ListItemText primary={query} primaryTypographyProps={{
+                        className: "overflow-x-hidden text-ellipsis"
+                    }} />
+                </Tooltip>
             </ListItemButton>
         </ListItem>
     );
 }
 
-export function HistoryDrawer({ ...others }: HistoryDrawerProps) {
-    const { history } = useHistory();
+export type HistoryDrawerProps = DrawerProps
+
+export function HistoryDrawer({ onClose, ...others }: HistoryDrawerProps) {
+    const navigate = useNavigate();
+    const [_, setSearchParams] = useSearchParams();
+    const { history, remove, clear } = useHistory();
+    const [open, setOpen] = React.useState(false);
+
+    const handleClick = (query: string) => {
+        navigate('/search');
+        setSearchParams({ q: query });
+        onClose?.({}, { reason: "escapeKeyDown" });
+    }
+
+    const handleClose = (query: string) => {
+        remove(query);
+    }
+
+    const handleConfirm = () => {
+        clear();
+        setOpen(false);
+    }
 
     return (
-        <Drawer
-            {...others}>
-            <div className="flex flex-col">
-                <List>
-                    {history.map(query => (
-                        <HistoryItem query={query} />
-                    ))}
-                </List>
-            </div>
-        </Drawer>
+        <>
+            <ConfirmationDialog
+                open={open}
+                onCancel={() => setOpen(false)}
+                onConfirm={handleConfirm}
+                onClose={() => setOpen(false)}
+                title='Do you wish to delete your recent queries?'
+            />
+            <Drawer
+                onClose={onClose}
+                {...others}>
+                <div className="flex flex-row h-full w-96">
+                    <div className="flex flex-col h-full p-2 bg-neutral-800">
+                        <IconButton onClick={onClose as React.MouseEventHandler}>
+                            <Icon>chevron_backward</Icon>
+                        </IconButton>
+                    </div>
+                    <div className="flex flex-col flex-1 overflow-x-auto">
+                        <div className="flex justify-between py-2 px-8 mb-2 select-none items-center">
+                            <Typography variant="body1" color="gray">Recent</Typography>
+                            <IconButton edge='end' onClick={() => setOpen(true)}>
+                                <Icon>delete</Icon>
+                            </IconButton>
+                        </div>
+                        {
+                            history.length === 0 &&
+                            <div className="flex flex-col items-center m-auto">
+                                <Icon className="text-6xl text-neutral-700 mb-2">history</Icon>
+                                <Typography color='grey' variant='body2'>No recents queries</Typography>
+                            </div>
+                        }
+                        {
+                            history.length > 0 &&
+                            <List className="overflow-y-auto">
+                                {history.map(query => (
+                                    <HistoryItem
+                                        key={query}
+                                        query={query}
+                                        onClick={() => handleClick(query)}
+                                        onClose={(e) => {
+                                            handleClose(query);
+                                            e.stopPropagation();
+                                        }}/>
+                                ))}
+                            </List>
+                        }
+                    </div>
+                </div>
+            </Drawer>
+        </>
     )
 }

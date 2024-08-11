@@ -1,0 +1,7 @@
+.history-item .history-item-action {
+    display: none !important;
+}
+
+.history-item:hover .history-item-action {
+    display: inline-flex !important;
+}

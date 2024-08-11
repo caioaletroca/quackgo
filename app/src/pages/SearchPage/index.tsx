@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import Page from "@/components/Page";
 import Content from "@/components/Page/Content";
 import { SearchResult } from "@/types";
-import { Link, Pagination, Skeleton, Typography } from "@mui/material";
+import { Grid, Link, Pagination, Skeleton, Typography } from "@mui/material";
 import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import "./index.css";
@@ -13,7 +13,7 @@ import isNil from 'lodash.isnil';
 import pick from 'lodash.pick';
 import { useFormik } from "formik";
 import { useHistory } from "@/components/History";
-import { HistoryDrawer } from "@/components/History/HistoryDrawer";
+import Quack from "@/components/Quack";
 
 function SearchResult({ FirstURL, Text }: SearchResult) {
     const navigate = useNavigate();
@@ -123,18 +123,26 @@ export default function SearchPage() {
                 onClear={() => formik.setFieldValue('q', '')}
             />
 
-            <HistoryDrawer open />
-
             {isMutating && <SearchPageLoading />}
 
             {!isMutating && searchResults?.data.length === 0 && <SearchPageEmpty />}
 
             {!isMutating && searchResults?.data && searchResults?.data.length > 0 &&
                 <Content className="pr-10">
-                    {searchResults?.data?.map((result, index) => (
-                        <SearchResult key={index} {...result} />
-                    ))}
-                    <Pagination page={formik.values.page + 1} count={Math.ceil(searchResults.meta.total / searchResults.meta.limit)} onChange={handlePagination} />
+                    <Grid container>
+                        <Grid item xs={1} />
+                        <Grid item xs={6}>
+                            {searchResults?.data?.map((result, index) => (
+                                <SearchResult key={index} {...result} />
+                            ))}
+                            <div className="flex justify-center">
+                                <Pagination page={formik.values.page + 1} count={Math.ceil(searchResults.meta.total / searchResults.meta.limit)} onChange={handlePagination} />
+                            </div>
+                        </Grid>
+                        <Grid item xs={5}>
+                            <Quack query={formik.values.q} />
+                        </Grid>
+                    </Grid>
                 </Content>
             }
         </Page>

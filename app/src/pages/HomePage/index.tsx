@@ -4,6 +4,7 @@ import SearchTextField from "@/components/SearchTextField";
 import { useNavigate } from "react-router-dom";
 import { Button, Grid, Link, Typography } from "@mui/material";
 import Icon from "@/components/Icon";
+import { HistoryButton } from "@/components/History";
 
 export default function HomePage() {
     const [query, setQuery] = React.useState('');
@@ -15,6 +16,9 @@ export default function HomePage() {
 
     return (
         <Page>
+            <div className="m-4">
+                <HistoryButton />
+            </div>
             <div className="flex flex-col justify-center items-center h-full">
                 <Grid container>
                     <Grid item xs={0} md={3} lg={4} />
