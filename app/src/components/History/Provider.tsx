@@ -53,7 +53,7 @@ export function HistoryProvider({ max = 100, children }: HistoryProviderProps) {
 
         // If reached max size, remove the last position
         if(h.length + 1 > max) {
-            h = h.slice(0, length - 2);
+            h = h.slice(0, h.length - 2);
         }
 
         setHistory([ query, ...h ]);

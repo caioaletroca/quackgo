@@ -14,13 +14,13 @@ describe("SearchTextField", () => {
     });
 
     it("should call onSubmit when user hits Enter key", () => {
-        const handleSubmit = vi.fn();
+        const handleSearch = vi.fn();
 
-        render(<SearchTextField onSubmit={handleSubmit} />);
+        render(<SearchTextField onSearch={handleSearch} />);
 
         const field = screen.getByTestId('search-text-field');
         fireEvent.keyDown(field, { key: "Enter", code: 'Enter' });
 
-        expect(handleSubmit).toHaveBeenCalled();
+        expect(handleSearch).toHaveBeenCalled();
     });
 });

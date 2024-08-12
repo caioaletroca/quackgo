@@ -44,6 +44,7 @@ export type HistoryDrawerProps = DrawerProps & {
 
 export function HistoryDrawer({ onClose, ...others }: HistoryDrawerProps) {
     const navigate = useNavigate();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [_, setSearchParams] = useSearchParams();
     const { history, remove, clear } = useHistory();
     const [open, setOpen] = React.useState(false);
