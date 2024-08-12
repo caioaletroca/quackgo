@@ -1,12 +1,15 @@
-import { AppBar, Button, Grid, Toolbar, Tooltip } from "@mui/material";
+import { AppBar, Button, Grid, IconButton, Toolbar, Tooltip } from "@mui/material";
 import SearchTextField, { SearchTextFieldProps } from "./SearchTextField";
 import { HistoryButton } from "./History";
 import Icon from "./Icon";
 import { useNavigate } from "react-router-dom";
 
-type HeaderProps = SearchTextFieldProps;
+type HeaderProps = SearchTextFieldProps & {
+    highlight?: boolean;
+    onHighLight?: () => void;
+};
 
-export default function Header({ onSearch, ...others }: HeaderProps) {
+export default function Header({ onSearch, highlight, onHighLight, ...others }: HeaderProps) {
     const navigate = useNavigate();
 
     return (
@@ -39,9 +42,19 @@ export default function Header({ onSearch, ...others }: HeaderProps) {
                             </Button>
                         </div>
                     </Grid>
+                    {
+                        onHighLight &&
+                        <Grid item xs={5}>
+                            <div className="mx-8">
+                                <Tooltip title='Highlight query'>
+                                    <IconButton color={highlight ? 'warning' : 'default'} onClick={onHighLight}>
+                                        <Icon>ink_highlighter</Icon>
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
+                        </Grid>
+                    }
                 </Grid>
-                {/* <div className="mr-4">
-                </div> */}
             </Toolbar>
         </AppBar>
     )

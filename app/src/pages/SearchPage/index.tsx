@@ -2,11 +2,9 @@ import { SearchParams, useSearch } from "@/api/search";
 import Header from "@/components/Header";
 import Page from "@/components/Page";
 import Content from "@/components/Page/Content";
-import { SearchResult } from "@/types";
-import { Grid, Link, Pagination, Skeleton, Typography } from "@mui/material";
+import { Grid, Pagination, Skeleton, Typography } from "@mui/material";
 import React from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import "./index.css";
+import { useSearchParams } from "react-router-dom";
 import Icon from "@/components/Icon";
 import omitBy from 'lodash.omitby';
 import isNil from 'lodash.isnil';
@@ -14,19 +12,8 @@ import pick from 'lodash.pick';
 import { useFormik } from "formik";
 import { useHistory } from "@/components/History";
 import Quack from "@/components/Quack";
-
-function SearchResultItem({ FirstURL, Text }: SearchResult) {
-    const navigate = useNavigate();
-
-    const handleClick = () => navigate(FirstURL);
-
-    return (
-        <div className="search-result flex flex-col mb-6" onClick={handleClick}>
-            <Typography variant="body2">{FirstURL}</Typography>
-            <Link variant='h6' className="text" href={FirstURL} underline="hover">{Text}</Link>
-        </div>
-    );
-}
+import SearchResultItem from "./SearchResultItem";
+import "./index.css";
 
 function SearchResultLoading() {
     return (
@@ -65,6 +52,7 @@ const initialValues = {
 export default function SearchPage() {
     const [searchParams, setSearchParams] = useSearchParams();
     const { add } = useHistory();
+    const [highlight, setHighlight] = React.useState(false);
 
     const { trigger , data: searchResults, isMutating } = useSearch();
 
@@ -121,6 +109,8 @@ export default function SearchPage() {
                 onBlur={formik.handleBlur}
                 onSearch={formik.handleSubmit}
                 onClear={() => formik.setFieldValue('q', '')}
+                highlight={highlight}
+                onHighLight={() => setHighlight(!highlight)}
             />
 
             {isMutating && <SearchPageLoading />}
@@ -136,7 +126,7 @@ export default function SearchPage() {
                                 <Typography color="grey" variant="caption">Total of {searchResults.meta.total} results</Typography>
                             </div>
                             {searchResults?.data?.map((result, index) => (
-                                <SearchResultItem key={index} {...result} />
+                                <SearchResultItem key={index} query={highlight ? formik.values.q : ''} {...result} />
                             ))}
                             <div className="flex justify-center">
                                 <Pagination page={formik.values.page + 1} count={Math.ceil(searchResults.meta.total / searchResults.meta.limit)} onChange={handlePagination} />

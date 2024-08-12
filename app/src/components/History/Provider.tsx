@@ -45,7 +45,7 @@ export function HistoryProvider({ max = 100, children }: HistoryProviderProps) {
         let h = [ ...history ];
 
         // If the item already exists
-        if(history.indexOf(query) > 0) {
+        if(history.indexOf(query) >= 0) {
             // Remove the "old" item, a new one will be added to the
             // top of the array
             h = h.filter(q => q !== query);

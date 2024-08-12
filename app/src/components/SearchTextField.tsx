@@ -16,11 +16,12 @@ export default function SearchTextField({ value, onSearch, onClear, ...others }:
 
     return (
         <TextField
+            data-testid='search-text-field'
             value={value}
             InputProps={{
                 endAdornment: value !== '' && (
 					<InputAdornment position="end">
-						<IconButton onClick={onClear}>
+						<IconButton data-testid='search-text-field-clear-button' onClick={onClear}>
 							<Icon>close</Icon>
 						</IconButton>
 					</InputAdornment>
