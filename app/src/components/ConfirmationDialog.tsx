@@ -10,14 +10,14 @@ export default function ConfirmationDialog({ title, onCancel, onConfirm, ...othe
     return (
         <Dialog
             {...others}>
-            <DialogTitle>
+            <DialogTitle data-testid='dialog-title'>
                 {title}
             </DialogTitle>
             <DialogActions>
-                <Button onClick={onCancel}>
+                <Button data-testid='dialog-cancel-button' onClick={onCancel}>
                     No
                 </Button>
-                <Button onClick={onConfirm}>
+                <Button data-testid='dialog-confirm-button' onClick={onConfirm}>
                     Yes
                 </Button>
             </DialogActions>

@@ -4,16 +4,14 @@ import Page from "@/components/Page";
 import Content from "@/components/Page/Content";
 import { Grid, Pagination, Skeleton, Typography } from "@mui/material";
 import React from "react";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import Icon from "@/components/Icon";
-import omitBy from 'lodash.omitby';
-import isNil from 'lodash.isnil';
-import pick from 'lodash.pick';
 import { useFormik } from "formik";
 import { useHistory } from "@/components/History";
 import Quack from "@/components/Quack";
 import SearchResultItem from "./SearchResultItem";
 import "./index.css";
+import getFormikValues from "@/lib/form/getFormikValues";
 
 function SearchResultLoading() {
     return (
@@ -50,35 +48,39 @@ const initialValues = {
 }
 
 export default function SearchPage() {
+    const location = useLocation();
     const [searchParams, setSearchParams] = useSearchParams();
     const { add } = useHistory();
     const [highlight, setHighlight] = React.useState(false);
+    const [formikValues, setFormikValues] = React.useState(initialValues);
 
     const { trigger , data: searchResults, isMutating } = useSearch();
 
-    const formikValues = React.useMemo(() => {
+    React.useEffect(() => {
         // Collect URL params entries and clean up any null ones
         // Also, clean up any invalid not expected entries
-        const params = pick(
-            omitBy(
-                Object.fromEntries(searchParams.entries()),
-                isNil
-            ),
-            Object.keys(initialValues)
-        );
-
+        const entries = Object.fromEntries(searchParams.entries());
+        // const raw = Object.assign({}, initialValues, entries, {
+        //     page: parseInt(entries.page),
+        //     limit: parseInt(entries.limit)
+        // });
+        const params = getFormikValues(initialValues, entries, Object.keys(initialValues));
+        
         // If there's some query
         if(params.q !== '') {
             trigger(params);
-            return Object.assign({}, initialValues, params);
         }
 
-        return initialValues;
+        setFormikValues(params);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [location.search]);
 
     const handleSubmit = (values: SearchParams) => {
-        setSearchParams(values);
+        setSearchParams({
+            q: values.q,
+            page: values.page!.toString(),
+            limit: values.limit!.toString()
+        });
         trigger(values)
         add(values.q);
     }
