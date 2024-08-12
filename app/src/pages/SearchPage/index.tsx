@@ -12,6 +12,7 @@ import Quack from "@/components/Quack";
 import SearchResultItem from "./SearchResultItem";
 import "./index.css";
 import getFormikValues from "@/lib/form/getFormikValues";
+import isFinite from 'lodash.isfinite';
 
 function SearchResultLoading() {
     return (
@@ -47,6 +48,29 @@ const initialValues = {
     limit: 10
 }
 
+/**
+ * Cleans up search params and return a sanitezed version merging with initial values
+ * for Formik
+ * @param values initialValues
+ * @param searchParams Search Params from React Router
+ * @returns 
+ */
+function getUrlParams(values: typeof initialValues, searchParams: URLSearchParams) {
+    // Retrive search params as a object
+    const entries = Object.fromEntries(searchParams.entries());
+
+    // Since URL params are strings, Material UI Pagination component complains about it
+    // To maintain a good stability, here we convert the string into numbers and omit any
+    // NaN from the object
+    const raw = Object.assign({}, entries, {
+        ...(isFinite(parseInt(entries.page)) ? { page: parseInt(entries.page) } : {}),
+        ...(isFinite(parseInt(entries.limit)) ? { limit: parseInt(entries.limit) } : {})
+    });
+
+    // Merges and filters the parameters
+    return getFormikValues(values, raw, Object.keys(values));
+}
+
 export default function SearchPage() {
     const location = useLocation();
     const [searchParams, setSearchParams] = useSearchParams();
@@ -59,12 +83,7 @@ export default function SearchPage() {
     React.useEffect(() => {
         // Collect URL params entries and clean up any null ones
         // Also, clean up any invalid not expected entries
-        const entries = Object.fromEntries(searchParams.entries());
-        // const raw = Object.assign({}, initialValues, entries, {
-        //     page: parseInt(entries.page),
-        //     limit: parseInt(entries.limit)
-        // });
-        const params = getFormikValues(initialValues, entries, Object.keys(initialValues));
+        const params = getUrlParams(initialValues, searchParams);
         
         // If there's some query
         if(params.q !== '') {
