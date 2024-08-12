@@ -1,10 +1,10 @@
+import React from "react";
 import { Drawer, DrawerProps, IconButton, List, ListItem, ListItemButton, ListItemText, Tooltip, Typography } from "@mui/material";
 import { useHistory } from "./useHistory";
 import Icon from "../Icon";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import "./HistoryDrawer.css";
-import React from "react";
 import ConfirmationDialog from "../ConfirmationDialog";
+import "./HistoryDrawer.css";
 
 export type HistoryItemProps = {
     query: string;
@@ -80,10 +80,12 @@ export function HistoryDrawer({ onClose, ...others }: HistoryDrawerProps) {
                     </div>
                     <div className="flex flex-col flex-1 overflow-x-auto">
                         <div className="flex justify-between py-2 px-8 mb-2 select-none items-center">
-                            <Typography variant="body1" color="gray">Recent</Typography>
-                            <IconButton edge='end' onClick={() => setOpen(true)}>
-                                <Icon>delete</Icon>
-                            </IconButton>
+                            <Typography variant="body1" color="gray">Recent Queries</Typography>
+                            <Tooltip title='Remove all recent queries'>
+                                <IconButton edge='end' onClick={() => setOpen(true)}>
+                                    <Icon>delete</Icon>
+                                </IconButton>
+                            </Tooltip>
                         </div>
                         {
                             history.length === 0 &&

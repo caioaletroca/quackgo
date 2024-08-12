@@ -7,7 +7,7 @@ export default function Content({
 }: React.HTMLProps<HTMLDivElement>) {
 	return (
 		<div
-			className={classNames('flex flex-col flex-1 h-full p-4', className)}
+			className={classNames('flex flex-col flex-1 h-full overflow-y-auto p-4', className)}
 			{...others}
 		/>
 	);

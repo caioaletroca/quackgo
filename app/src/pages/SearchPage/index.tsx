@@ -15,7 +15,7 @@ import { useFormik } from "formik";
 import { useHistory } from "@/components/History";
 import Quack from "@/components/Quack";
 
-function SearchResult({ FirstURL, Text }: SearchResult) {
+function SearchResultItem({ FirstURL, Text }: SearchResult) {
     const navigate = useNavigate();
 
     const handleClick = () => navigate(FirstURL);
@@ -128,12 +128,15 @@ export default function SearchPage() {
             {!isMutating && searchResults?.data.length === 0 && <SearchPageEmpty />}
 
             {!isMutating && searchResults?.data && searchResults?.data.length > 0 &&
-                <Content className="pr-10">
+                <Content className="px-8">
                     <Grid container>
                         <Grid item xs={1} />
                         <Grid item xs={6}>
+                            <div className="mb-2">
+                                <Typography color="grey" variant="caption">Total of {searchResults.meta.total} results</Typography>
+                            </div>
                             {searchResults?.data?.map((result, index) => (
-                                <SearchResult key={index} {...result} />
+                                <SearchResultItem key={index} {...result} />
                             ))}
                             <div className="flex justify-center">
                                 <Pagination page={formik.values.page + 1} count={Math.ceil(searchResults.meta.total / searchResults.meta.limit)} onChange={handlePagination} />
