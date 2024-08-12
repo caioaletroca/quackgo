@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "test:e2e:open": "cypress open --e2e --browser chrome",
+    "test:e2e": "cypress run --e2e --browser chrome"
   },
   "dependencies": {
     "@emotion/react": "^11.13.0",
@@ -40,6 +42,9 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.20",
+    "cypress": "^13.13.2",
+    "cypress-failed-log": "^2.10.0",
+    "cypress-vite": "^1.5.0",
     "eslint": "^9.8.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",

@@ -20,6 +20,7 @@ export default function Header({ onSearch, highlight, onHighLight, ...others }: 
                         <div className="flex flex-row px-2 justify-evenly">
                             <Tooltip title='Home'>
                                 <img
+                                    data-testid='logo'
                                     className="mr-4 w-6 cursor-pointer"
                                     onClick={() => navigate('/')}
                                     src='./logo.svg'
@@ -47,7 +48,7 @@ export default function Header({ onSearch, highlight, onHighLight, ...others }: 
                         <Grid item xs={5}>
                             <div className="mx-8">
                                 <Tooltip title='Highlight query'>
-                                    <IconButton color={highlight ? 'warning' : 'default'} onClick={onHighLight}>
+                                    <IconButton data-testid='header-highlight-button' color={highlight ? 'warning' : 'default'} onClick={onHighLight}>
                                         <Icon>ink_highlighter</Icon>
                                     </IconButton>
                                 </Tooltip>

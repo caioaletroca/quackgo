@@ -15,11 +15,12 @@ export type HistoryItemProps = {
 function HistoryItem({ query, onClick, onClose }: HistoryItemProps) {
     return (
         <ListItem
+            data-testid='history-item'
             className="history-item"
             disablePadding
             onClick={onClick}
             secondaryAction={(
-                <IconButton className="history-item-action" edge='end' onClick={onClose}>
+                <IconButton data-testid='history-item-delete-button' className="history-item-action" edge='end' onClick={onClose}>
                     <Icon color='grey'>close</Icon>
                 </IconButton>
             )}>
@@ -72,11 +73,12 @@ export function HistoryDrawer({ onClose, ...others }: HistoryDrawerProps) {
                 title='Do you wish to delete your recent queries?'
             />
             <Drawer
+                data-testid='history-drawer'
                 onClose={onClose}
                 {...others}>
                 <div className="flex flex-row h-full w-96">
                     <div className="flex flex-col h-full p-2 bg-neutral-800">
-                        <IconButton onClick={onClose as React.MouseEventHandler}>
+                        <IconButton data-testid='history-drawer-close-button' onClick={onClose as React.MouseEventHandler}>
                             <Icon>chevron_backward</Icon>
                         </IconButton>
                     </div>
@@ -84,7 +86,7 @@ export function HistoryDrawer({ onClose, ...others }: HistoryDrawerProps) {
                         <div className="flex justify-between py-2 px-8 mb-2 select-none items-center">
                             <Typography variant="body1" color="gray">Recent Queries</Typography>
                             <Tooltip title='Remove all recent queries'>
-                                <IconButton edge='end' onClick={() => setOpen(true)}>
+                                <IconButton data-testid='history-drawer-delete-button' edge='end' onClick={() => setOpen(true)}>
                                     <Icon>delete</Icon>
                                 </IconButton>
                             </Tooltip>

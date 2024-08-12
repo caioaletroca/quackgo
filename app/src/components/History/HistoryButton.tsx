@@ -11,7 +11,7 @@ export function HistoryButton() {
     return (
         <>
             <Tooltip title='Search history'>
-                <IconButton onClick={handleClick}>
+                <IconButton data-testid='history-button' onClick={handleClick}>
                     <Icon>history</Icon>
                 </IconButton>
             </Tooltip>
