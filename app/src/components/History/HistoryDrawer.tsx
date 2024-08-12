@@ -37,7 +37,9 @@ function HistoryItem({ query, onClick, onClose }: HistoryItemProps) {
     );
 }
 
-export type HistoryDrawerProps = DrawerProps
+export type HistoryDrawerProps = DrawerProps & {
+    onClose: () => void;
+}
 
 export function HistoryDrawer({ onClose, ...others }: HistoryDrawerProps) {
     const navigate = useNavigate();
@@ -48,7 +50,7 @@ export function HistoryDrawer({ onClose, ...others }: HistoryDrawerProps) {
     const handleClick = (query: string) => {
         navigate('/search');
         setSearchParams({ q: query });
-        onClose?.({}, { reason: "escapeKeyDown" });
+        onClose?.();
     }
 
     const handleClose = (query: string) => {

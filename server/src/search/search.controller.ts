@@ -1,11 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { SearchService } from './search.service';
 import { PaginatedResponse, SearchResult } from '../types';
-import { PaginatedParams } from 'src/types/pagination';
-
-type SearchParams = PaginatedParams & {
-  q: string;
-};
+import { SearchInputDTO } from 'src/dto/SearchInput';
 
 @Controller('search')
 export class SearchController {
@@ -13,7 +9,7 @@ export class SearchController {
 
   @Get()
   async search(
-    @Query() { q, page = 0, limit = 10 }: SearchParams,
+    @Query() { q, page = 0, limit = 10 }: SearchInputDTO,
   ): Promise<PaginatedResponse<SearchResult[]>> {
     const results = await this.searchService.search(q);
 

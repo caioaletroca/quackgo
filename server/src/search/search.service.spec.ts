@@ -19,7 +19,7 @@ const generateResults = (): SearchResult[] => {
       ...EmptyResult,
       FirstURL: `${index}`,
     }));
-}
+};
 
 describe('SearchService', () => {
   let searchService: SearchService;
