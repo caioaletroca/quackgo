@@ -25,6 +25,8 @@ This is a very simple search engine front and back-end using [DuckDuckGo](https:
 
 ## Development
 
+Inside both project folders (**app** and **server**), copy the contents of _.env.example_ file and create a new one named _.env_. Then use the following commands:
+
 ```sh
 npm install
 
